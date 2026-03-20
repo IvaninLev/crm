@@ -1,7 +1,36 @@
-<script setup >
+<script setup>
 import DashboardLayout from "../Layouts/DashboardLayout.vue";
+import {computed, onMounted, ref} from "vue";
+import TaskService from "../services /TaskService.js";
+
+const tasks = ref([])
 
 
+const stats = computed(() => {
+    return {
+        sending: tasks.value.filter(t=> t.status === 0).length,
+        done: tasks.value.filter(t=> t.status === 1).length,
+        error: tasks.value.filter(t=> t.status === 2).length,
+    }
+})
+
+const statusMap = (sts) => {
+    if (sts === null || sts === undefined) return ''
+
+    const statusMap = {
+        send: 0,
+        completed: 1,
+        error: 2,
+    }
+    const status = Object.keys(statusMap).find(key => statusMap[key] === sts)
+
+    return status || ''
+}
+
+onMounted(async () => {
+    const response = await TaskService.getTasks()
+    tasks.value = response?.data
+})
 </script>
 
 <template>
@@ -10,19 +39,19 @@ import DashboardLayout from "../Layouts/DashboardLayout.vue";
 
             <div class="grid grid-cols-4 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
-                    <div class="text-3xl font-bold text-blue-600">48</div>
+                    <div class="text-3xl font-bold text-blue-600">{{stats.sending}}</div>
                     <div class="text-gray-600 mt-2">sends</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
-                    <div class="text-3xl font-bold text-yellow-500">11</div>
+                    <div class="text-3xl font-bold text-yellow-500">{{stats.sending}}</div>
                     <div class="text-gray-600 mt-2">in progress</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
-                    <div class="text-3xl font-bold text-green-500">48</div>
+                    <div class="text-3xl font-bold text-green-500">{{ stats.done}}</div>
                     <div class="text-gray-600 mt-2">done</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
-                    <div class="text-3xl font-bold text-red-500">5</div>
+                    <div class="text-3xl font-bold text-red-500">{{ stats.error }}</div>
                     <div class="text-gray-600 mt-2">errors</div>
                 </div>
             </div>
@@ -38,50 +67,17 @@ import DashboardLayout from "../Layouts/DashboardLayout.vue";
             </div>
 
             <div class="space-y-2">
-                <div class="grid grid-cols-4 gap-4 items-center bg-white p-4 rounded-lg border border-gray-200">
-                    <div class="font-medium">Send</div>
-                    <div>Driver monitor and method for monitoring driver</div>
-                    <div>01-01-2022</div>
+                <div v-for="task in tasks" :key="task.id"
+                     class="grid grid-cols-4 gap-4 items-center bg-white p-4 rounded-lg border border-gray-200">
+                    <div class="font-medium">{{ statusMap(task.status) }}</div>
+                    <div>{{ task.name }}</div>
+                    <div>{{task.created}}</div>
                     <div class="text-right">
                         <a href="#" class="text-blue-600 hover:text-blue-800">View Insights</a>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-4 gap-4 items-center bg-white p-4 rounded-lg border border-gray-200">
-                    <div class="font-medium text-yellow-500">In progress</div>
-                    <div>Encapsulated Fragile Insulation Materials</div>
-                    <div>01-01-2022</div>
-                    <div class="text-right">
-                        <a href="#" class="text-blue-600 hover:text-blue-800">View Insights</a>
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-4 gap-4 items-center bg-white p-4 rounded-lg border border-gray-200">
-                    <div class="font-medium text-green-500">Done</div>
-                    <div>Process for preparing organotion compounds</div>
-                    <div>01-01-2022</div>
-                    <div class="text-right">
-                        <a href="#" class="text-blue-600 hover:text-blue-800">View Insights</a>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-4 gap-4 items-center bg-white p-4 rounded-lg border border-gray-200">
-                    <div class="font-medium text-red-500">Error</div>
-                    <div>Footplate Device for vibrating footwear</div>
-                    <div>01-01-2022</div>
-                    <div class="text-right">
-                        <a href="#" class="text-blue-600 hover:text-blue-800">View Insights</a>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-4 gap-4 items-center bg-white p-4 rounded-lg border border-gray-200">
-                    <div class="font-medium text-green-500">Done</div>
-                    <div>Lorem ipsum dolor sit amet consectetur adipisicing elit...</div>
-                    <div>01-01-2022</div>
-                    <div class="text-right">
-                        <a href="#" class="text-blue-600 hover:text-blue-800">View Insights</a>
-                    </div>
-                </div>
             </div>
         </div>
     </DashboardLayout>

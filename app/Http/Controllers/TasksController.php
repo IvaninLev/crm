@@ -18,6 +18,16 @@ use Inertia\Inertia;
 
 class TasksController extends Controller
 {
+    public function apiIndex()
+    {
+        $tasks = TodoList::query()
+            ->where(['user_id' => Auth::id()])
+            ->orderByDesc('created_at')
+            ->get();
+
+        return TaskResource::collection($tasks);
+    }
+
     public function index()
     {
         $tasks = TodoList::query()->where(['user_id' => Auth::id()])->paginate(PaginationEnum::PAGE_SIZE->value);

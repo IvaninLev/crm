@@ -16,6 +16,7 @@ Route::post('register', [RegisterController::class, 'register']);
 
 Route::group(['prefix' => 'tasks', 'middleware' => 'auth:sanctum'], function () {
     Route::post('create', [TasksController::class, 'store']);
+    Route::get('tasks', [TasksController::class, 'apiIndex']);
     Route::post('edit/{task}', [TasksController::class, 'update']);
     Route::post('{task}/complete', [TasksController::class, 'complete']);
     Route::delete('destroy/{task}', [TasksController::class, 'destroy']);
@@ -24,5 +25,4 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function () 
     Route::post('create', [UsersController::class, 'store']);
     Route::post('update/{user}', [UsersController::class, 'update']);
 });
-
 

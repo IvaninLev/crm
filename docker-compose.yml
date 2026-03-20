@@ -1,11 +1,11 @@
 services:
     laravel.test:
         build:
-            context: './vendor/laravel/sail/runtimes/8.3'
+            context: './vendor/laravel/sail/runtimes/8.5'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: 'sail-8.3/app'
+        image: 'sail-8.5/app'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -25,6 +25,7 @@ services:
             - mysql
             - redis
             - mailpit
+
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -42,13 +43,10 @@ services:
         networks:
             - crm
         healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - '-p${DB_PASSWORD}'
+            test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
             retries: 3
             timeout: 5s
+
     redis:
         image: 'redis:alpine'
         ports:
@@ -58,10 +56,7 @@ services:
         networks:
             - crm
         healthcheck:
-            test:
-                - CMD
-                - redis-cli
-                - ping
+            test: [ "CMD", "redis-cli", "ping" ]
             retries: 3
             timeout: 5s
 
@@ -72,7 +67,6 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - crm
-
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         restart: always
@@ -85,12 +79,14 @@ services:
             UPLOAD_LIMIT: "${UPLOAD_LIMIT:-50M}"
         networks:
             - crm
+
+
 networks:
     crm:
         driver: bridge
+
 volumes:
     crm-mysql:
         driver: local
     crm-redis:
         driver: local
-

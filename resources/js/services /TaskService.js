@@ -19,6 +19,10 @@ class TaskService {
         return await axios.post(`tasks/${task}/complete`, {complete})
             .then(response => response.data)
     }
+    async getTasks(){
+        return await axios.get('tasks/tasks')
+            .then(response => response.data)
+    }
 }
 
 export default new TaskService()

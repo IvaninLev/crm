@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, ref} from "vue"
+import {reactive, ref, watch} from "vue"
 import AuthLayout from "../../Layouts/AuthLayout.vue";
 import AuthService from "../../services /AuthService.js";
 import {router} from "@inertiajs/vue3";
@@ -15,23 +15,90 @@ const form = reactive({
     password_confirmation: '',
     remember: false
 })
+
+const errors = ref({})
+const mode = ref(props.mode)
+
+const clearErrors = () => {
+    errors.value = {}
+}
+
+const setBackendErrors = (error, fallbackMessage) => {
+    const responseErrors = error?.response?.data?.errors
+    if (responseErrors && typeof responseErrors === 'object') {
+        errors.value = responseErrors
+        return
+    }
+    const message = error?.response?.data?.message
+    if (message) {
+        errors.value = {general: [message]}
+        return
+    }
+    errors.value = {general: [fallbackMessage]}
+}
+
+const validateLogin = () => {
+    const nextErrors = {}
+    if (!form.email.trim()) {
+        nextErrors.email = ['E-mail is required']
+    }
+    if (!form.password) {
+        nextErrors.password = ['Password is required']
+    } else if (form.password.length < 8) {
+        nextErrors.password = ['Password must be at least 8 characters']
+    }
+    errors.value = nextErrors
+    return Object.keys(nextErrors).length === 0
+}
+
+const validateRegister = () => {
+    const nextErrors = {}
+
+    const rules = {
+        name: () => !form.name.trim() && 'Name is required',
+        email: () => !form.email.trim() && 'E-mail is required',
+        password: () => {
+            if (!form.password) return 'Password is required'
+            if (form.password.length < 8) return 'Min 8 characters'
+        },
+        password_confirmation: () => {
+            if (!form.password_confirmation) return 'Confirm your password'
+            if (form.password_confirmation !== form.password) return 'Passwords do not match'
+        }
+    }
+
+    // Пробегаемся по правилам и заполняем ошибки
+    Object.keys(rules).forEach(field => {
+        const error = rules[field]()
+        if (error) nextErrors[field] = [error]
+    })
+
+    errors.value = nextErrors
+    return Object.keys(nextErrors).length === 0
+}
 const login = async () => {
-     await AuthService.login(form)
-        .then(response => {
-            router.visit(route('home'))
-        })
+    if (!validateLogin()) return
+    try {
+        await AuthService.login(form)
+        router.visit(route('home'))
+    } catch (error) {
+        setBackendErrors(error, 'Login failed')
+    }
 }
 
 const register = async () => {
-    await AuthService.register(form)
-        .then(response => {
-            router.visit(route('home'))
-        })
+    if (!validateRegister()) return
+    try {
+        await AuthService.register(form)
+        router.visit(route('home'))
+    } catch (error) {
+        setBackendErrors(error, 'Registration failed')
+    }
 }
 
-const errors = ref({})
-
-const mode = ref(props.mode)
+watch(mode, () => {
+    clearErrors()
+})
 </script>
 
 <template>
@@ -64,6 +131,9 @@ const mode = ref(props.mode)
                     type="text"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#60AEA8] focus:border-[#60AEA8] outline-none transition"
                     placeholder="Enter your name">
+                <p v-if="errors.name" class="mt-1 text-sm text-red-600">
+                    {{ errors.name[0] }}
+                </p>
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
@@ -74,6 +144,9 @@ const mode = ref(props.mode)
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#60AEA8] focus:border-[#60AEA8] outline-none transition"
                     placeholder="Enter your email"
                 >
+                <p v-if="errors.email" class="mt-1 text-sm text-red-600">
+                    {{ errors.email[0] }}
+                </p>
             </div>
 
             <div>
@@ -103,6 +176,10 @@ const mode = ref(props.mode)
                     {{ errors.password_confirmation[0] }}
                 </p>
             </div>
+
+            <p v-if="errors.general" class="text-sm text-red-600">
+                {{ errors.general[0] }}
+            </p>
 
             <button
                 v-if="mode === 'register'"

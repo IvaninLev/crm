@@ -4,6 +4,7 @@ import DefaultLayout from "./Layouts/DefaultLayout.vue";
 import {ZiggyVue} from "ziggy-js"
 import {toast} from "vue3-toastify";
 
+import "../sass/app.scss"
 import "vue3-toastify/dist/index.css";
 
 createInertiaApp({
