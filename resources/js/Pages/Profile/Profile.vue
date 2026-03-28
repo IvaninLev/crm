@@ -1,8 +1,9 @@
 <script setup>
-import { usePage } from "@inertiajs/vue3";
+import {router, usePage} from "@inertiajs/vue3";
 import {computed, ref} from "vue";
 import {route} from "ziggy-js";
 
+const emit = defineEmits(['close', 'apply', 'clear'])
 
 const pageProps = usePage().props.value ?? usePage().props;
 
@@ -14,12 +15,13 @@ const editHref = computed(() => {
     if (!user.value || !user.value.id) return null;
     return route('users.edit', { user: user.value.id });
 });
-console.log('pageProps', pageProps);
 </script>
 
 <template>
     <div class="p-8 max-w-xl mx-auto bg-white rounded shadow">
+        <button @click="router.visit(route('home'))">close</button>
         <h1 class="text-2xl font-bold mb-4">My Profile</h1>
+
 
         <div class="space-y-4">
             <div>
