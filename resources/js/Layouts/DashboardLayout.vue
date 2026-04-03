@@ -1,6 +1,7 @@
 <script setup>
 import {Link, router, usePage} from "@inertiajs/vue3"
 import {route} from "ziggy-js";
+import {computed} from "vue";
 
 defineProps({
     pageTitle: {
@@ -9,6 +10,8 @@ defineProps({
     }
 })
 const {auth} = usePage().props
+
+const isAdmin = computed(() => auth.user.role === 'admin')
 
 function logout() {
     router.post(route('logout'));
@@ -32,7 +35,7 @@ function logout() {
                     <li>
                         <Link :href="route('tasks.index')" class="text-gray-600 hover:text-gray-900">- Tasks</Link>
                     </li>
-                    <li>
+                    <li v-if="isAdmin">
                         <Link :href="route('users.index')" class="text-gray-600 hover:text-gray-900">- Users</Link>
                     </li>
                 </ul>

@@ -22,8 +22,15 @@ const totalPages = computed(() => Math.max(1, Number(meta.value.last_page ?? 1))
 const loadPage = async (newPage) => {
     const response = await TaskService.getTasksPage(newPage)
     tasks.value = response?.data ?? []
-    meta.value = response?.meta ?? meta.value
-    page.value = response?.meta?.current_page ?? newPage
+
+    const nextMeta = response?.meta ?? {}
+    meta.value = {
+        ...meta.value,
+        ...nextMeta,
+        stats: nextMeta.stats ?? meta.value.stats ?? {},
+    }
+
+    page.value = meta.value.current_page ?? newPage
 }
 
 const nextPage = async () => {
@@ -80,7 +87,6 @@ const statusMap = (sts) => {
                     <div class="font-medium">Status</div>
                     <div class="font-medium">Title</div>
                     <div class="font-medium">Publish Date</div>
-                    <div class="font-medium">Insights</div>
                 </div>
             </div>
 
@@ -90,9 +96,6 @@ const statusMap = (sts) => {
                     <div class="font-medium">{{ statusMap(task.status) }}</div>
                     <div>{{ task.name }}</div>
                     <div>{{ task.created }}</div>
-                    <div class="text-right">
-                        <a href="#" class="text-blue-600 hover:text-blue-800">View Insights</a>
-                    </div>
                 </div>
                 <div class="flex d-flex justify-center">
                     <button class="px-3 py-1 border rounded mr-2" :disabled="page === 1" @click="prevPage">Prev</button>

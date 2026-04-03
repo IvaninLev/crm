@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Mail\OrderShipped;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
@@ -119,5 +120,15 @@ class User extends Authenticatable
         return Attribute::make(
             get: fn($value) => Storage::url($value),
         );
+    }
+
+    public function userTask(): HasMany
+    {
+        return $this->hasMany(TodoList::class, 'user_id', 'id');
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(TodoList::class, 'user_id', 'id');
     }
 }

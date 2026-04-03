@@ -10,9 +10,11 @@ class TasksSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::first() ?? User::factory()->create();
-        TodoList::factory(200)
-            ->for($user)
-            ->create();
+
+        User::all()->each(function (User $user) {
+            TodoList::factory(20)
+                ->for($user)
+                ->create();
+        });
     }
 }

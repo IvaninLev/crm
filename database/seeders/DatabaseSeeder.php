@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
@@ -15,11 +16,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $seeders = [
+            AdminUserSeed::class,
+            UserSeeder::class,
             TasksSeeder::class
-
         ];
 
-        if(App::isLocal()){
+        if (App::isLocal()) {
 
         }
 

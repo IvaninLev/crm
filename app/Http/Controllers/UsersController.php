@@ -48,6 +48,8 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
+        $user->load('userTask');
+
         return Inertia::render('Users/View', [
             'user' => new UserResource($user),
         ]);
