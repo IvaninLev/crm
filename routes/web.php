@@ -10,9 +10,7 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [Controllers\HomeController::class, 'profile'])->name('profile');
-    Route::get('/', function () {
-        return Inertia::render('Home');
-    })->name('home');
+    Route::get('/', [Controllers\HomeController::class, 'index'])->name('home');
 
 
     Route::middleware("checkAdmin")->group(function () {
@@ -25,6 +23,5 @@ Route::middleware(['auth'])->group(function () {
     ]);
     Route::post('/logout', [Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 });
-
 
 

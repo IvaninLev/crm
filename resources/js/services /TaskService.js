@@ -15,12 +15,19 @@ class TaskService {
             .then(response => response.data)
     }
 
-    async toggleConfirm(task,complete) {
+    async toggleConfirm(task, complete) {
         return await axios.post(`tasks/${task}/complete`, {complete})
             .then(response => response.data)
     }
-    async getTasks(){
+
+    async getTasks() {
         return await axios.get('tasks/tasks')
+            .then(response => response.data)
+    }
+
+    async getTasksPage(page = 1) {
+        return await axios
+            .get('tasks/tasks', {params: {page}})
             .then(response => response.data)
     }
 }

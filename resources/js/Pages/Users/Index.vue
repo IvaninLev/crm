@@ -1,15 +1,27 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import {Link, router, usePage} from '@inertiajs/vue3'
+import {computed, ref} from 'vue'
 import DashboardLayout from '../../Layouts/DashboardLayout.vue'
 import UsersLayout from '../../Layouts/UsersLayout.vue'
-import { route } from 'ziggy-js'
+import {route} from 'ziggy-js'
 
 const props = usePage().props.value ?? usePage().props
 const users = ref(props.users?.data ?? props.users ?? [])
+const meta = computed(() => props.users.meta ?? {stats: {}, last_page: 1, current_page: 1})
+const page = computed(() => meta.value.current_page ?? 1)
+
+const totalPages = computed(() => Math.max(1, Number(meta.value.last_page ?? 1)))
+const goPage = (newPage) => {
+    if (newPage < 1 || newPage > totalPages.value) return
+    router.visit(route('users.index', {page: newPage}))
+}
+
+const nextPage = async () => goPage(page.value + 1)
+
+const prevPage = async () => goPage(page.value - 1)
 </script>
 
- <template>
+<template>
     <dashboard-layout page-title="Users">
         <UsersLayout>
             <div class="p-8">
@@ -53,6 +65,13 @@ const users = ref(props.users?.data ?? props.users ?? [])
                                 View
                             </Link>
                         </div>
+                    </div>
+                    <div class="flex d-flex justify-center">
+                        <button class="px-3 py-1 border rounded mr-2" :disabled="page === 1" @click="prevPage">Prev</button>
+                        <div class="px-2">Page {{ page }} / {{ totalPages }}</div>
+                        <button class="px-3 py-1 border rounded ml-2" :disabled="page === totalPages" @click="nextPage">
+                            Next
+                        </button>
                     </div>
                 </div>
             </div>

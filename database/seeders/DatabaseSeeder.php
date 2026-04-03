@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $seeders = [
-            AdminUserSeed::class
+            TasksSeeder::class
+
         ];
 
         if(App::isLocal()){

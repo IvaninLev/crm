@@ -1,14 +1,43 @@
 <script setup>
 import DashboardLayout from "../../Layouts/DashboardLayout.vue";
-import {Link, usePage, router} from "@inertiajs/vue3"; // Добавьте router
-import {ref} from "vue";
+import {Link, usePage, router} from "@inertiajs/vue3";
+import {computed, ref} from "vue";
 import {route} from "ziggy-js";
+import TaskService from "../../services /TaskService.js";
+
 
 const props = usePage().props
-const tasks = ref(props.tasks.data || [])
-const statusList = ref(props?.statusList || {})
+const tasks = computed(() => props.tasks?.data ?? [])
+const meta = computed(() => props.tasks.meta ?? {stats: {}, last_page: 1, current_page: 1})
+const page = computed(() => meta.value.current_page ?? 1)
 const deletingTask = ref(new Set())
 
+const stats = computed(() => ({
+    total: meta.value.total ?? 0,
+    sending: meta.value.stats?.sending ?? 0,
+    inProgress: meta.value.stats?.sending ?? 0,
+    done: meta.value.stats?.done ?? 0,
+    error: meta.value.stats?.error ?? 0,
+}))
+
+const totalPages = computed(() => Math.max(1, Number(meta.value.last_page ?? 1)))
+
+const loadPage = async (newPage) => {
+    const response = await TaskService.getTasksPage(newPage)
+    tasks.value = response?.data ?? []
+    meta.value = response?.meta ?? meta.value
+    page.value = response?.meta?.current_page ?? newPage
+}
+
+
+const goPage = (newPage) => {
+    if (newPage < 1 || newPage > totalPages.value) return
+    router.visit(route('tasks.index', {page: newPage}))
+}
+
+const nextPage = async () => goPage(page.value + 1)
+
+const prevPage = async () => goPage(page.value - 1)
 const destroy = (task) => {
     if (confirm(`Are you sure you want to delete "${task.name}"?`)) {
         router.delete(route('tasks.destroy', {id: task.id}), {
@@ -48,7 +77,8 @@ const destroy = (task) => {
                     class="grid grid-cols-4 gap-4  bg-white p-4 rounded-lg border border-gray-200"
                 >
                     <div v-if="task.status === 1" class="font-medium text-green-500">
-                        <div class=" items-center inline-flex  px-4 py-2 rounded-full bg-green-50 text-green-700  border-[2px] border-green-700">
+                        <div
+                            class=" items-center inline-flex  px-4 py-2 rounded-full bg-green-50 text-green-700  border-[2px] border-green-700">
                             Completed
                         </div>
                     </div>
@@ -61,13 +91,14 @@ const destroy = (task) => {
                     <div v-else class="font_medium">
                         <div
                             class="inline-flex items-center px-4 py-2 rounded-full bg-gray-50 text-gray-700 border-[2px] border-gray-200">
-                            Send </div>
+                            Send
+                        </div>
                     </div>
                     <div class="inline-flex items-center">{{ task.name }}</div>
                     <div class="inline-flex items-center+">{{ task.created }}</div>
                     <div class="inline-flex items-center">
                         <div>
-                            {{ statusList.values }}
+                            {{ }}
                         </div>
                         <Link :href="route('tasks.edit', {id:task.id})" class="text-blue-600 hover:text-blue-800 pr-2">
                             Edit
@@ -83,6 +114,13 @@ const destroy = (task) => {
                         </button>
 
                     </div>
+                </div>
+                <div class="flex d-flex justify-center">
+                    <button class="px-3 py-1 border rounded mr-2" :disabled="page === 1" @click="prevPage">Prev</button>
+                    <div class="px-2">Page {{ page }} / {{ totalPages }}</div>
+                    <button class="px-3 py-1 border rounded ml-2" :disabled="page === totalPages" @click="nextPage">
+                        Next
+                    </button>
                 </div>
 
             </div>

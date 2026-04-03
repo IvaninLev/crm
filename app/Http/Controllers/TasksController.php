@@ -22,10 +22,9 @@ class TasksController extends Controller
     {
         $tasks = TodoList::query()
             ->where(['user_id' => Auth::id()])
-            ->orderByDesc('created_at')
-            ->get();
+            ->paginate(PaginationEnum::PAGE_SIZE->value);
 
-        return TaskResource::collection($tasks);
+        return TaskResource:: collection($tasks);
     }
 
     public function index()
@@ -86,7 +85,7 @@ class TasksController extends Controller
         $name = $task->title;
         $task->delete();
         session()->flash('task_deleted', [
-            'message' => 'Task deleted'. $name .' successfully',
+            'message' => 'Task deleted' . $name . ' successfully',
         ]);
 
     }
