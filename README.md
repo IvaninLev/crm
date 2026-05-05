@@ -9,16 +9,9 @@ Lightweight CRM-style app with auth, role-based user management, and personal ta
 - Inertia single-page experience; toast notifications; Tailwind utility styling.
 
 ### Quick Start (local, no Docker)
-1. `cp .env.example .env`
-2. Set `APP_KEY` via `php artisan key:generate`.
-3. For a self-contained dev run, switch storage drivers in `.env`:
-   - `SESSION_DRIVER=array`
-   - `CACHE_STORE=array`
-   - `QUEUE_CONNECTION=sync`
-   - (Optional) set `DB_CONNECTION=sqlite` and `DB_DATABASE=database/database.sqlite` then `touch database/database.sqlite`.
-4. Install deps: `composer install` and `npm install`.
-5. Run migrations + seed admin: `php artisan migrate --seed`.
-6. Start servers: in one terminal `php artisan serve`, in another `npm run dev`.
+1. make install-node-packages
+2. make refresh
+3.make start
 7. Login with seeded admin `test@admin.com` / `abcd1234`.
 
 ### Quick Start (Docker/Sail)
