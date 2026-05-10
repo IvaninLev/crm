@@ -57,10 +57,8 @@ Login with seeded admin: test@admin.com / abcd1234
 <details>
     <summary>Click to view screenshots</summary>
     <img width="1875" height="933" alt="image" src="https://github.com/user-attachments/assets/f8671ad6-fed8-4fbd-a3fb-32f79ad1d02b" />
-
-    <img width="1875" height="933" alt="image" src="https://github.com/user-attachments/assets/4ede62b8-723b-4658-9a3a-0af537f2c2e1" />
+    <img width="1875" height="933" alt="image" src="https://github.com/user-attachments/assets/4ede62b8-723b-4658-9a3a-0af537f2c2e1" />    
     <img width="1875" height="933" alt="image" src="https://github.com/user-attachments/assets/f253c24b-dc73-418a-a60f-2fd3644bac18" />
-
     <img width="1875" height="933" alt="image" src="https://github.com/user-attachments/assets/7be2960c-01b8-49d7-a28b-892a7b619491" />
     <img width="1875" height="933" alt="image" src="https://github.com/user-attachments/assets/e5424cc9-f69b-4e64-893c-baca5c4ca01c" />
     
