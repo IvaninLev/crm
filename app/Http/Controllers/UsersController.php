@@ -62,7 +62,6 @@ class UsersController extends Controller
             'edit' => true
         ]);
     }
-
     public function update(UserUpdateRequest $request, User $user, ImageService $imageService)
     {
         $validated = $request->validated();
