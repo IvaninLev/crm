@@ -1,12 +1,12 @@
-<script setup>
-import RegisterLayout from "../../Layouts/RegisterLayout.vue";
-</script>
+    <script setup>
+    import RegisterLayout from "../../Layouts/RegisterLayout.vue";
+    </script>
 
-<template>
-<RegisterLayout>
-</RegisterLayout>
-</template>
+    <template>
+    <RegisterLayout>
+    </RegisterLayout>
+    </template>
 
-<style scoped>
+    <style scoped>
 
-</style>
+    </style>

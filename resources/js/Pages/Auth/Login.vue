@@ -67,7 +67,6 @@ const validateRegister = () => {
         }
     }
 
-    // Пробегаемся по правилам и заполняем ошибки
     Object.keys(rules).forEach(field => {
         const error = rules[field]()
         if (error) nextErrors[field] = [error]

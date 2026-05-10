@@ -60,7 +60,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'users';
-    public const PAGE_SIZE = 5;
+    public const PAGE_SIZE  = 5;
     public const ROLE_ADMIN = 'admin';
     public const ROLE_USER = 'user';
     /**

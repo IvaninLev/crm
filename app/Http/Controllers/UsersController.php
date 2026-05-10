@@ -67,11 +67,11 @@ class UsersController extends Controller
     {
         $validated = $request->validated();
 
-        if (isset($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-        } else {
-            unset($validated['password']);
-        }
+            if (isset($validated['password'])) {
+                $validated['password'] = Hash::make($validated['password']);
+            } else {
+                unset($validated['password']);
+            }
 
         if ($request->hasFile('avatar')) {
             $avatarPath = $imageService->upload($request, 'users/' . $user->id);
