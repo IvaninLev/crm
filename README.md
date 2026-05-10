@@ -11,7 +11,7 @@ Lightweight CRM-style app with auth, role-based user management, and personal ta
 ### 📦 Quick Start (Local Setup)
 
 1. **Prepare environment:**
-   ```bash
+   bash
    cp .env.example .env
    # If not using Docker, update DB_* credentials in .env
 Install PHP dependencies:
@@ -19,17 +19,7 @@ If you have PHP/Composer installed locally:
 
 Bash
 composer install
-Or via Docker (standard Sail way):
-
-Bash
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php84-composer:latest \
-    composer install --ignore-platform-reqs
 Build & Seed:
-
 Bash
 make up
 make install-node-packages
